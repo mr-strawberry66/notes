@@ -1,0 +1,4 @@
+export GCP_PROJECT_ID=""
+export DATASET=""
+export TABLE=""
+export ENVIRONMENT=""
