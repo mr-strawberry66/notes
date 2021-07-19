@@ -1,4 +1,5 @@
 """Classes to handle interractions with BigQuery."""
+from google.api_core import exceptions
 from google.cloud import bigquery
 from pandas import DataFrame
 import pandas_gbq
@@ -53,7 +54,25 @@ class BigQueryOperations:
             raise Exception(err)
 
     def read_notes(self) -> list:
-        """Read existing notes from BigQuery."""
+        """
+        Read existing notes from BigQuery.
+
+        returns: (list)
+            A list of dictionaries
+            storing previously written
+            notes.
+
+        excepts (google.api_core.exceptions.NotFound):
+            If the table doesn't exist,
+            create a new table and
+            return the default note
+            stored in constants.py.
+
+        excepts (Exception):
+            Raise a generic exception
+            if something else goes
+            wrong with the query.
+        """
         try:
             bqclient_result = (
                 self.client.query(
@@ -64,9 +83,11 @@ class BigQueryOperations:
                 .to_dict("records")
             )
             return bqclient_result
-        except Exception:
+        except exceptions.NotFound:
             print("The table or dataset could not be found. Creating now")
             return self.create_notes_table()
+        except Exception as err:
+            raise Exception(err)
 
     def write_notes(self) -> str:
         """Write new and updated notes to BigQuery."""
