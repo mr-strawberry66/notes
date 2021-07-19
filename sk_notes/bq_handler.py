@@ -89,6 +89,40 @@ class BigQueryOperations:
         except Exception as err:
             raise Exception(err)
 
-    def write_notes(self) -> str:
-        """Write new and updated notes to BigQuery."""
-        return self.client
+    def write_notes(self, notes: DataFrame) -> str:
+        """
+        Write new and updated notes to BigQuery.
+
+        args:
+            notes: (DataFrame)
+                A dataframe storing notes to
+                write to BigQuery.
+
+        returns: (str)
+            A string confirming the success
+            of the write operation.
+
+        excepts: (pandas_gbq.gbq.TableCreationError)
+            If a database issue occurs,
+            raise the specific error.
+
+        excepts: (Exception)
+            Raise a generic exception
+            if something else goes
+            wrong with the write operation.
+        """
+        try:
+            notes.to_gbq(
+                destination_table=f"{self.dataset}.{self.table}",
+                project_id=self.gcp_project_id,
+                chunksize=None,
+                if_exists="replace",
+            )
+            return (
+                f"Notes successfully stored in {self.gcp_project_id}."
+                f"{self.dataset}.{self.table}"
+            )
+        except pandas_gbq.gbq.TableCreationError as pd_err:
+            raise Exception(pd_err)
+        except Exception as err:
+            raise Exception(err)
