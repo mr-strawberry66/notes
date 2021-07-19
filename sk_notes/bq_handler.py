@@ -1,5 +1,5 @@
 """Classes to handle interractions with BigQuery."""
-from google.api_core import exceptions
+from google.api_core import exceptions as google_exceptions
 from google.cloud import bigquery
 from pandas import DataFrame
 import pandas_gbq
@@ -83,7 +83,7 @@ class BigQueryOperations:
                 .to_dict("records")
             )
             return bqclient_result
-        except exceptions.NotFound:
+        except google_exceptions.NotFound:
             print("The table or dataset could not be found. Creating now")
             return self.create_notes_table()
         except Exception as err:
