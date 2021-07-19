@@ -19,10 +19,10 @@ class BigQueryOperations:
     ) -> None:
         """Initialise the class."""
         bq_credentials = BigQueryCredentials(
-            gcp_project_id,
-            dataset,
-            table,
-            environment,
+            gcp_project_id=gcp_project_id,
+            dataset=dataset,
+            table=table,
+            environment=environment,
         )
         self.gcp_project_id = bq_credentials.set_gcp_project_id()
         self.dataset_suffix = bq_credentials.set_dataset_suffix()
