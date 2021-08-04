@@ -38,7 +38,13 @@ class BigQueryOperations:
         """
 
     def create_notes_table(self) -> None:
-        """Create a table in BigQuery to store notes in."""
+        """
+        Create a table in BigQuery using the example note.
+
+        Should only be executed if no existing table is found,
+        this will create a table using the example note in
+        constants.py as a template.
+        """
         dataframe = DataFrame(EXAMPLE_NOTE)
         try:
             dataframe.to_gbq(

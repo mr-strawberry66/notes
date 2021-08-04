@@ -1,5 +1,5 @@
 # Notes
-This repository is to house code used to run my note-taking application.
+This repository is to house code used to run a CLI note-taking application.
 
 ## Environment
 Included in this repo is a file called `env-template`. This file is a template you can use in order to create an environment file of your own.
