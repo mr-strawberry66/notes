@@ -37,7 +37,7 @@ class BigQueryOperations:
                 `{self.gcp_project_id}.{self.dataset}.{self.table}`
         """
 
-    def create_notes_table(self) -> None:
+    def _create_notes_table(self) -> None:
         """
         Create a table in BigQuery using the example note.
 
@@ -91,7 +91,7 @@ class BigQueryOperations:
             return bqclient_result
         except google_exceptions.NotFound:
             print("The table or dataset could not be found. Creating now")
-            return self.create_notes_table()
+            return self._create_notes_table()
         except Exception as err:
             raise Exception(err)
 
