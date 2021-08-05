@@ -6,7 +6,7 @@ EXAMPLE_NOTE = [
         "id": 1,
         "category": "Example",
         "title": "This is an example note.",
-        "description": (
+        "body": (
             "This is an example of a note. "
             "The category field is used to filter "
             "and group by notes. Examples of this "
@@ -24,6 +24,6 @@ EXAMPLE_NOTE = [
             "by how long you have left to do the task, "
             "shortest amount of time, to longest."
         ),
-        "complete_by": datetime.now().strftime("%Y-%m-%d"),
+        "due_date": datetime.now().strftime("%Y-%m-%d"),
     }
 ]
