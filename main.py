@@ -17,9 +17,7 @@ def main():
     local_ops = LocalHandler()
     read_notes = local_ops.read_notes()
 
-    print(read_notes)
-
-    note = CreateNote()
+    note = CreateNote(data=read_notes)
 
     read_notes.append(note.create_note())
 

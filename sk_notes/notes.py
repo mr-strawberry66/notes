@@ -7,11 +7,20 @@ import inquirer
 class CreateNote:
     """Wrapper around note creation"""
 
-    def __init__(self, categories: list = None) -> None:
+    def __init__(self, categories: list = None, data: list = None) -> None:
+        """Initialise the class."""
         if not categories:
             self.categories = ["Personal", "Work"]
         else:
             self.categories = categories
+        self.data = data
+
+    def _find_max_id(self):
+        """Return the highest id in list of notes."""
+        _ids = []
+        for row in self.data:
+            _ids.append(row["id"])
+        return max(_ids)
 
     def _set_id(self):
         """
@@ -21,7 +30,7 @@ class CreateNote:
             A suitable ID to
             use with a new note.
         """
-        return
+        return self._find_max_id() + 1
 
     def _set_title(self):
         """Set the title for a note based on user input."""
@@ -71,8 +80,7 @@ class CreateNote:
                     return timestamp.strftime("%Y-%m-%d")
                 except ValueError:
                     print(
-                        f"\n{Fore.RED}I said yyyy-mm-dd you fucking "
-                        f"imbecile, try again.{Fore.RESET}\n"
+                        f"\n{Fore.YELLOW}Date must be yyyy-mm-dd format{Fore.RESET}\n"
                     )
                     pass
 
