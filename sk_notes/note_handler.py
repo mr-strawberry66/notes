@@ -425,6 +425,7 @@ class DisplayNote:
             return matched_rows
 
     def list_by_tag(self, tag: str) -> None:
+        """List notes grouped by a tag."""
         for note in self._find_tag(tag=tag):
             _id = note["id"]
             title = note["title"]
