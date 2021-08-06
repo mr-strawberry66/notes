@@ -1,7 +1,9 @@
 """Classes to handle note creation, deletion, and restoration."""
 from colorama import Fore
 from datetime import datetime
+from time import time
 from pandas import DataFrame
+import editor
 import inquirer
 
 
@@ -73,14 +75,29 @@ class CreateNote:
     def _set_body(self):
         """Set the body of a note based on user input."""
         while True:
-            body = input("Write your note: ")
+            body = editor.edit(contents="# Write your note on the next line: ").decode(
+                "utf-8"
+            )
             if not body:
                 print(
                     f"\n{Fore.YELLOW}Please input content for your note.{Fore.RESET}\n"
                 )
                 pass
             else:
-                return body
+                return body.replace("# Write your note on the next line: ", "")
+
+    def _clean_tags(self, tags: str) -> list:
+        cleaned_tags = []
+        for tag in tags.split(","):
+            cleaned_tags.append(tag.strip().lower())
+        return cleaned_tags
+
+    def _set_tags(self):
+        """Set tags for a note."""
+        tags = input("Enter tags, seperated by a comma: ")
+        if tags:
+            return self._clean_tags(tags=tags)
+        return []
 
     def _set_due_date(self):
         """Set the due date of a note based on user input."""
@@ -102,22 +119,41 @@ class CreateNote:
         """Create a new note."""
         note = {
             "id": self._set_id(),
+            "created_at": int(time()),
             "category": self._set_category(),
             "title": self._set_title(),
             "body": self._set_body(),
+            "tags": self._set_tags(),
             "due_date": self._set_due_date(),
         }
         return note
 
 
 class UpdateNote:
-    """Wrapper around locating and updating notes."""
+    """
+    Wrapper around locating and updating notes.
 
-    def __init__(self) -> None:
+    args:
+        data: (list)
+            A list of dicts storing
+            your notes.
+    """
+
+    def __init__(self, data: list = None) -> None:
         """Initialise the class."""
-        pass
+        self.data = data
 
-    # TODO: Allow updates
+    def _find_note(self, _id: int) -> dict:
+        """Return a note by a specified ID."""
+        for row in self.data:
+            if row["id"] == _id:
+                return self.data.index(row) + 1
+
+    def update_note(self, _id: int):
+        # index = self._find_note(_id=_id) - 1
+        # note = self.data[index]
+        # return note
+        return _id
 
 
 class DeleteNote:
@@ -130,7 +166,7 @@ class DeleteNote:
             your notes.
     """
 
-    def __init__(self, data: list) -> None:
+    def __init__(self, data: list = None) -> None:
         """Initialise the class."""
         self.data = data
 
@@ -153,7 +189,7 @@ class DeleteNote:
 class DisplayNote:
     """Wrapper around displaying notes to the end user."""
 
-    def __init__(self, data: list) -> None:
+    def __init__(self, data: list = None) -> None:
         """
         Initialise the class.
 
@@ -214,6 +250,7 @@ class DisplayNote:
             title = note["title"]
             body = note["body"]
             _due_date = note["due_date"]
+            tags = note["tags"]
             colour = self._test_due_date(due_date=_due_date)
             if _due_date:
                 due_date = _due_date
@@ -221,9 +258,10 @@ class DisplayNote:
                 due_date = "Not Set"
             print(
                 f"\nId: {_id}\n"
-                f"Title: {title}\n\n"
-                f"{body}\n"
-                f"Due Date: {colour}{due_date}{Fore.RESET}"
+                f"Title: {title}\n"
+                f"{body}\n\n"
+                f"Due Date: {colour}{due_date}{Fore.RESET}\n"
+                f"Tags: {tags}"
             )
         except TypeError:
             return "Note not found"
@@ -243,6 +281,31 @@ class DisplayNote:
                 to display.
         """
         for note in self._aggregate(aggregation=aggregation):
+            _id = note["id"]
+            title = note["title"]
+            _due_date = note["due_date"]
+            colour = self._test_due_date(due_date=_due_date)
+            if _due_date:
+                due_date = _due_date
+            else:
+                due_date = "Not Set"
+            print(
+                f"\nId: {_id}\n"
+                f"Title: {title}\n"
+                f"Due Date: {colour}{due_date}{Fore.RESET}"
+            )
+
+    def _find_tag(self, tag: str) -> list:
+        matched_rows = []
+        if self.data:
+            for row in self.data:
+                for _tag in row["tags"]:
+                    if _tag == tag:
+                        matched_rows.append(row)
+            return matched_rows
+
+    def list_by_tag(self, tag: str) -> None:
+        for note in self._find_tag(tag=tag):
             _id = note["id"]
             title = note["title"]
             _due_date = note["due_date"]

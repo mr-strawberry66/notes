@@ -6,4 +6,5 @@ ipython==7.26.0
 pandas==1.3.0
 pandas-gbq==0.15.0
 pyarrow==4.0.1
+python-editor==1.0.4
 pyfiglet==0.8.post1
