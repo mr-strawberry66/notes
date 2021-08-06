@@ -139,21 +139,141 @@ class UpdateNote:
             your notes.
     """
 
-    def __init__(self, data: list = None) -> None:
+    def __init__(self, categories: list = None, data: list = None) -> None:
         """Initialise the class."""
         self.data = data
+        self.create_note = CreateNote(categories=categories, data=self.data)
 
-    def _find_note(self, _id: int) -> dict:
+    def find_index(self, _id: int) -> int:
         """Return a note by a specified ID."""
         for row in self.data:
             if row["id"] == _id:
                 return self.data.index(row) + 1
 
-    def update_note(self, _id: int):
-        # index = self._find_note(_id=_id) - 1
-        # note = self.data[index]
-        # return note
-        return _id
+    def _find_note(self, _id: int) -> dict:
+        index = self.find_index(_id=_id) - 1
+        return self.data[index]
+
+    def _update_field(self, _id: int, field: str) -> str:
+        """
+        Update a field in a specified note.
+
+        args:
+            _id: (int)
+                The Id of the note
+                to update.
+
+            field: (str)
+                The field to edit.
+
+        returns:
+            The string updated by the
+            user for the specified field.
+        """
+        content = self._find_note(_id=_id)[field]
+        updated_content = editor.edit(contents=content).decode("utf-8")
+        return updated_content
+
+    def _clean_tags(self, tag_string: str) -> list:
+        """Take a string representation of a tag and parse as a list."""
+        cleaned_tags = []
+        tags = tag_string.split(",")
+        for tag in tags:
+            cleaned_tags.append(tag.strip().lower().replace("\n", ""))
+        return cleaned_tags
+
+    def _update_tags(self, _id) -> list:
+        """Update tags for a note."""
+        tag_string = ""
+        tags = self._find_note(_id=_id)["tags"]
+        for tag in tags:
+            tag_string += f"{tag},"
+        updated_tags = editor.edit(contents=tag_string).decode("utf-8")
+        return self._clean_tags(tag_string=updated_tags)
+
+    def update_all(self, _id) -> dict:
+        """Update all fields for a note."""
+        note = self._find_note(_id=_id)
+        updated_note = {
+            "id": note["id"],
+            "created_at": note["created_at"],
+            "category": self.create_note._set_category(),
+            "title": self._update_field(_id=_id, field="title"),
+            "body": self._update_field(_id=_id, field="body"),
+            "tags": self._update_tags(_id=_id),
+            "due_date": self.create_note._set_due_date(),
+        }
+        return updated_note
+
+    def update_category(self, _id) -> dict:
+        """Update the category for a note."""
+        note = self._find_note(_id=_id)
+        updated_note = {
+            "id": note["id"],
+            "created_at": note["created_at"],
+            "category": self.create_note._set_category(),
+            "title": note["title"],
+            "body": note["body"],
+            "tags": note["tags"],
+            "due_date": note["due_date"],
+        }
+        return updated_note
+
+    def update_title(self, _id) -> dict:
+        """Update the title for a note."""
+        note = self._find_note(_id=_id)
+        updated_note = {
+            "id": note["id"],
+            "created_at": note["created_at"],
+            "category": note["category"],
+            "title": self._update_field(_id=_id, field="title"),
+            "body": note["body"],
+            "tags": note["tags"],
+            "due_date": note["due_date"],
+        }
+        return updated_note
+
+    def update_body(self, _id) -> dict:
+        """Update the body for a note."""
+        note = self._find_note(_id=_id)
+        updated_note = {
+            "id": note["id"],
+            "created_at": note["created_at"],
+            "category": note["category"],
+            "title": note["title"],
+            "body": self._update_field(_id=_id, field="body"),
+            "tags": note["tags"],
+            "due_date": note["due_date"],
+        }
+        return updated_note
+
+    def update_tags(self, _id) -> dict:
+        """Update the tags for a note."""
+        note = self._find_note(_id=_id)
+        updated_note = {
+            "id": note["id"],
+            "created_at": note["created_at"],
+            "category": note["category"],
+            "title": note["title"],
+            "body": note["body"],
+            "tags": self._update_tags(_id=_id),
+            "due_date": note["due_date"],
+        }
+        return updated_note
+
+    def update_date(self, _id) -> dict:
+        """Update the due date for a note."""
+        note = self._find_note(_id=_id)
+        updated_note = {
+            "id": note["id"],
+            "created_at": note["created_at"],
+            "category": note["category"],
+            "title": note["title"],
+            "body": note["body"],
+            "tags": note["tags"],
+            "due_date": self.create_note._set_due_date(),
+        }
+        return updated_note
 
 
 class DeleteNote:

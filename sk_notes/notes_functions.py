@@ -10,22 +10,22 @@ class Notes:
         """Initialise the class."""
         self.local = LocalHandler()
         self.data = self.local.read_notes()
-        self.create = CreateNote(data=self.data)
-        self.delete = DeleteNote(data=self.data)
-        self.display = DisplayNote(data=self.data)
-        self.update = UpdateNote(data=self.data)
+        self.create_note = CreateNote(data=self.data)
+        self.delete_note = DeleteNote(data=self.data)
+        self.display_note = DisplayNote(data=self.data)
+        self.update_note = UpdateNote(data=self.data)
 
     def notes(self) -> str:
         """Display all notes."""
-        return self.display.list_all()
+        return self.display_note.list_all()
 
     def personal(self) -> str:
         """Display a summary of notes categorised as personal."""
-        return self.display.list_aggregation(aggregation="Personal")
+        return self.display_note.list_aggregation(aggregation="Personal")
 
     def work(self) -> str:
         """Display a summary of notes categorised as work."""
-        return self.display.list_aggregation(aggregation="Work")
+        return self.display_note.list_aggregation(aggregation="Work")
 
     def tag(self, tag: str) -> str:
         """
@@ -36,7 +36,7 @@ class Notes:
                 The tag to search
                 notes for.
         """
-        return self.display.list_by_tag(tag=tag.lower().strip())
+        return self.display_note.list_by_tag(tag=tag.lower().strip())
 
     def note(self, _id: int) -> str:
         """
@@ -49,29 +49,103 @@ class Notes:
                 of. This can be obtained by
                 running notes.show_all().
         """
-        return self.display.show_note(_id=_id)
+        return self.display_note.show_note(_id=_id)
 
     def new(self) -> None:
         """Write a new note."""
-        note = self.create.create_note()
+        note = self.create_note.create_note()
         self.data.append(note)
 
     def save(self) -> str:
         """Store notes locally and optionally in Cloud Storage."""
         return self.local.write_notes(data=self.data)
 
-    def delete(self, _id: int) -> str:
+    def delete_note(self, _id: int) -> str:
         """Delete a note by specified Id."""
-        note_pos = self.delete.find_index(_id=_id)
-        if note_pos:
-            if isinstance(note_pos, int):
-                self.data.pop(note_pos - 1)
+        index = self.delete_note.find_index(_id=_id)
+        if index:
+            if isinstance(index, int):
+                self.data.pop(index - 1)
                 return f"Note {_id} has been deleted"
             else:
-                print(note_pos)
+                print(index)
         else:
             return "Note not found"
 
     def update(self, _id: int) -> str:
         """Update a note specified by Id."""
-        return self.update.update_note(_id=_id)
+        index = self.update_note.find_index(_id=_id)
+        if index:
+            if isinstance(index, int):
+                self.data.append(self.update_note.update_all(_id=_id))
+                self.data.pop(index - 1)
+                return f"Note {_id} has been updated"
+            else:
+                print(index)
+        else:
+            return "Note not found"
+
+    def update_category(self, _id: int) -> str:
+        """Update a note specified by Id."""
+        index = self.update_note.find_index(_id=_id)
+        if index:
+            if isinstance(index, int):
+                self.data.append(self.update_note.update_category(_id=_id))
+                self.data.pop(index - 1)
+                return f"Note {_id} has been updated"
+            else:
+                print(index)
+        else:
+            return "Note not found"
+
+    def update_title(self, _id: int) -> str:
+        """Update a note specified by Id."""
+        index = self.update_note.find_index(_id=_id)
+        if index:
+            if isinstance(index, int):
+                self.data.append(self.update_note.update_title(_id=_id))
+                self.data.pop(index - 1)
+                return f"Note {_id} has been updated"
+            else:
+                print(index)
+        else:
+            return "Note not found"
+
+    def update_body(self, _id: int) -> str:
+        """Update a note specified by Id."""
+        index = self.update_note.find_index(_id=_id)
+        if index:
+            if isinstance(index, int):
+                self.data.append(self.update_note.update_body(_id=_id))
+                self.data.pop(index - 1)
+                return f"Note {_id} has been updated"
+            else:
+                print(index)
+        else:
+            return "Note not found"
+
+    def update_tags(self, _id: int) -> str:
+        """Update a note specified by Id."""
+        index = self.update_note.find_index(_id=_id)
+        if index:
+            if isinstance(index, int):
+                self.data.append(self.update_note.update_tags(_id=_id))
+                self.data.pop(index - 1)
+                return f"Note {_id} has been updated"
+            else:
+                print(index)
+        else:
+            return "Note not found"
+
+    def update_date(self, _id: int) -> str:
+        """Update a note specified by Id."""
+        index = self.update_note.find_index(_id=_id)
+        if index:
+            if isinstance(index, int):
+                self.data.append(self.update_note.update_date(_id=_id))
+                self.data.pop(index - 1)
+                return f"Note {_id} has been updated"
+            else:
+                print(index)
+        else:
+            return "Note not found"
