@@ -60,7 +60,7 @@ class Notes:
         """Store notes locally and optionally in Cloud Storage."""
         return self.local.write_notes(data=self.data)
 
-    def delete_note(self, _id: int) -> str:
+    def delete(self, _id: int) -> str:
         """Delete a note by specified Id."""
         index = self.delete_note.find_index(_id=_id)
         if index:
