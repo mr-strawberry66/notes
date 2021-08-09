@@ -427,17 +427,19 @@ class DisplayNote:
 
     def list_by_tag(self, tag: str) -> None:
         """List notes grouped by a tag."""
-        for note in self._find_tag(tag=tag):
-            _id = note["id"]
-            title = note["title"]
-            _due_date = note["due_date"]
-            colour = self._test_due_date(due_date=_due_date)
-            if _due_date:
-                due_date = _due_date
-            else:
-                due_date = "Not Set"
-            print(
-                f"\nId: {_id}\n"
-                f"Title: {title}\n"
-                f"Due Date: {colour}{due_date}{Fore.RESET}"
-            )
+        notes = self._find_tag(tag=tag)
+        if notes:
+            for note in notes:
+                _id = note["id"]
+                title = note["title"]
+                _due_date = note["due_date"]
+                colour = self._test_due_date(due_date=_due_date)
+                if _due_date:
+                    due_date = _due_date
+                else:
+                    due_date = "Not Set"
+                print(
+                    f"\nId: {_id}\n"
+                    f"Title: {title}\n"
+                    f"Due Date: {colour}{due_date}{Fore.RESET}"
+                )
