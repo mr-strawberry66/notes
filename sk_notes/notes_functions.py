@@ -6,14 +6,22 @@ from sk_notes.note_handler import CreateNote, DeleteNote, DisplayNote, UpdateNot
 class Notes:
     """Wrapper around storing and displaying notes."""
 
-    def __init__(self) -> None:
-        """Initialise the class."""
+    def __init__(self, categories: list) -> None:
+        """
+        Initialise the class.
+
+        args:
+            categories: (list)
+                A list of user defined
+                categories.
+        """
+        self.categories = categories
         self.local = LocalHandler()
         self.data = self.local.read_notes()
-        self.create_note = CreateNote(data=self.data)
+        self.create_note = CreateNote(categories=categories, data=self.data)
         self.delete_note = DeleteNote(data=self.data)
         self.display_note = DisplayNote(data=self.data)
-        self.update_note = UpdateNote(data=self.data)
+        self.update_note = UpdateNote(categories=categories, data=self.data)
 
     def notes(self) -> str:
         """Display all notes."""
@@ -26,6 +34,10 @@ class Notes:
     def work(self) -> str:
         """Display a summary of notes categorised as work."""
         return self.display_note.list_aggregation(aggregation="Work")
+
+    def group(self, aggregation: str) -> str:
+        """Display a summary of notes by a specified aggregation."""
+        return self.display_note.list_aggregation(aggregation=aggregation)
 
     def tag(self, tag: str) -> str:
         """

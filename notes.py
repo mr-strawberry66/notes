@@ -1,5 +1,5 @@
 """Wrapper around the REPL."""
-from sk_notes import Notes
+from sk_notes import Notes, SetUp
 from pyfiglet import Figlet
 import IPython
 
@@ -7,7 +7,10 @@ import IPython
 def main():
     """Initialise and execute the REPL."""
     figlet = Figlet(font="slant")
-    notes = Notes()
+
+    settings = SetUp()
+
+    notes = Notes(categories=settings.aggregations())
 
     header = figlet.renderText("Notes")
     scope_vars = {"notes": notes}

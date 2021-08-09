@@ -4,6 +4,7 @@ from .constants import EXAMPLE_NOTE
 from .local_handler import LocalHandler
 from .note_handler import CreateNote, DeleteNote, DisplayNote, UpdateNote
 from .notes_functions import Notes
+from .settings import SetUp
 
 __all__ = [
     "BigQueryOperations",
@@ -14,4 +15,5 @@ __all__ = [
     "LocalHandler",
     "Notes",
     "UpdateNote",
+    "SetUp",
 ]

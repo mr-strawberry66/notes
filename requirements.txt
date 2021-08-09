@@ -8,3 +8,4 @@ pandas-gbq==0.15.0
 pyarrow==4.0.1
 python-editor==1.0.4
 pyfiglet==0.8.post1
+PyYAML==5.4.1
