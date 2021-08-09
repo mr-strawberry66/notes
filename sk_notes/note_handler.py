@@ -87,6 +87,7 @@ class CreateNote:
                 return body.replace("# Write your note on the next line: ", "")
 
     def _clean_tags(self, tags: str) -> list:
+        """Parse a string of tags into a list."""
         cleaned_tags = []
         for tag in tags.split(","):
             cleaned_tags.append(tag.strip().lower())
