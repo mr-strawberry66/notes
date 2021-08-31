@@ -66,10 +66,7 @@ class CreateNote:
             A list of dicts storing
             your notes.
         """
-        if not categories:
-            self.categories = ["Personal", "Work"]
-        else:
-            self.categories = categories
+        self.categories = categories or ["Personal", "Work"]
         self.data = data
 
     def _find_max_id(self):
@@ -126,17 +123,12 @@ class CreateNote:
 
     def _clean_tags(self, tags: str) -> list:
         """Parse a string of tags into a list."""
-        cleaned_tags = []
-        for tag in tags.split(","):
-            cleaned_tags.append(tag.strip().lower())
-        return cleaned_tags
+        return [tag.strip().lower() for tag in tags.split(",")]
 
     def _set_tags(self):
         """Set tags for a note."""
         tags = input("Enter tags, seperated by a comma: ")
-        if tags:
-            return self._clean_tags(tags=tags)
-        return []
+        return self._clean_tags(tags=tags) if tags else []
 
     def _set_due_date(self):
         """Set the due date of a note based on user input."""
@@ -185,7 +177,7 @@ class UpdateNote:
 
     def find_index(self, _id: int) -> int:
         """Return a note by a specified ID."""
-        return [row.id for row in self.data if row.id == _id][0] + 1
+        return [row.id for row in self.data if row.id == _id][0]
 
     def _find_note(self, _id: int) -> dict:
         index = self.find_index(_id=_id) - 1
@@ -207,7 +199,9 @@ class UpdateNote:
             The string updated by the
             user for the specified field.
         """
-        content = self._find_note(_id=_id)[field]
+
+        note = self._find_note(_id=_id)
+        content = note.title if field == "title" else note.body
         updated_content = editor.edit(contents=content).decode("utf-8")
         return updated_content
 
@@ -231,86 +225,42 @@ class UpdateNote:
     def update_all(self, _id) -> dict:
         """Update all fields for a note."""
         note = self._find_note(_id=_id)
-        updated_note = {
-            "id": note.id,
-            "created_at": note.created_at,
-            "category": self.create_note._set_category(),
-            "title": self._update_field(_id=_id, field="title"),
-            "body": self._update_field(_id=_id, field="body"),
-            "tags": self._update_tags(_id=_id),
-            "due_date": self.create_note._set_due_date(),
-        }
-        return updated_note
+        note.category = self.create_note._set_category()
+        note.title = self._update_field(_id=_id, field="title")
+        note.body = self._update_field(_id=_id, field="body")
+        note.tags = self._update_tags(_id=_id)
+        note.due_date = self.create_note._set_due_date()
+        return note
 
     def update_category(self, _id) -> dict:
         """Update the category for a note."""
         note = self._find_note(_id=_id)
-        updated_note = {
-            "id": note.id,
-            "created_at": note.created_at,
-            "category": self.create_note._set_category(),
-            "title": note.title,
-            "body": note.body,
-            "tags": note.tags,
-            "due_date": note.due_date,
-        }
-        return updated_note
+        note.category = self.create_note._set_category()
+        return note
 
     def update_title(self, _id) -> dict:
         """Update the title for a note."""
         note = self._find_note(_id=_id)
-        updated_note = {
-            "id": note.id,
-            "created_at": note.created_at,
-            "category": note.category,
-            "title": self._update_field(_id=_id, field="title"),
-            "body": note.body,
-            "tags": note.tags,
-            "due_date": note.due_date,
-        }
-        return updated_note
+        note.title = self._update_field(_id=_id, field="title")
+        return note
 
     def update_body(self, _id) -> dict:
         """Update the body for a note."""
         note = self._find_note(_id=_id)
-        updated_note = {
-            "id": note.id,
-            "created_at": note.created_at,
-            "category": note.category,
-            "title": note.title,
-            "body": self._update_field(_id=_id, field="body"),
-            "tags": note.tags,
-            "due_date": note.due_date,
-        }
-        return updated_note
+        note.body = self._update_field(_id=_id, field="body")
+        return note
 
     def update_tags(self, _id) -> dict:
         """Update the tags for a note."""
         note = self._find_note(_id=_id)
-        updated_note = {
-            "id": note.id,
-            "created_at": note.created_at,
-            "category": note.category,
-            "title": note.title,
-            "body": note.body,
-            "tags": self._update_tags(_id=_id),
-            "due_date": note.due_date,
-        }
-        return updated_note
+        note.tags = (self._update_tags(_id=_id),)
+        return note
 
     def update_date(self, _id) -> dict:
         """Update the due date for a note."""
         note = self._find_note(_id=_id)
-        updated_note = {
-            "id": note.id,
-            "created_at": note.created_at,
-            "category": note.category,
-            "title": note.title,
-            "body": note.body,
-            "tags": note.tags,
-            "due_date": self.create_note._set_due_date(),
-        }
-        return updated_note
+        note.due_date = self.create_note._set_due_date()
+        return note
 
 
 class DeleteNote:
@@ -380,10 +330,7 @@ class DisplayNote:
                 title = note.title
                 _due_date = note.due_date
                 colour = self._test_due_date(due_date=_due_date)
-                if _due_date:
-                    due_date = _due_date
-                else:
-                    due_date = "Not Set"
+                due_date = _due_date or "Not Set"
                 print(
                     f"\nId: {_id}\n"
                     f"Title: {title}\n"
@@ -405,10 +352,7 @@ class DisplayNote:
             _due_date = note.due_date
             tags = note.tags
             colour = self._test_due_date(due_date=_due_date)
-            if _due_date:
-                due_date = _due_date
-            else:
-                due_date = "Not Set"
+            due_date = _due_date or "Not Set"
             print(
                 f"\nId: {_id}\n"
                 f"Title: {title}\n"
@@ -458,10 +402,7 @@ class DisplayNote:
                 title = note.title
                 _due_date = note.due_date
                 colour = self._test_due_date(due_date=_due_date)
-                if _due_date:
-                    due_date = _due_date
-                else:
-                    due_date = "Not Set"
+                due_date = _due_date or "Not Set"
                 print(
                     f"\nId: {_id}\n"
                     f"Title: {title}\n"

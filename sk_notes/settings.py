@@ -14,10 +14,7 @@ class Config:
                 The path to the yaml
                 settings file used to
         """
-        if settings_file:
-            self.settings_file = settings_file
-        else:
-            self.settings_file = "settings.yml"
+        self.settings_file = settings_file or "settings.yml"
 
     def settings(self) -> None:
         """Load settings.yml into memory."""

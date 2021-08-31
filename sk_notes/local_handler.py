@@ -13,10 +13,7 @@ class LocalHandler:
 
     def __init__(self, directory: str = None) -> None:
         """Initialise the class."""
-        if not directory:
-            self.directory = ".notes_storage"
-        else:
-            self.directory = directory
+        self.directory = directory or ".notes_storage"
         self.file_prefix = "local_stored_notes"
 
     def _set_local_storage(self) -> str:
@@ -30,8 +27,7 @@ class LocalHandler:
 
     def _test_for_local_directory(self) -> bool:
         """Return true if local directory exists."""
-        exists = os.path.isdir(self.directory)
-        return exists
+        return os.path.isdir(self.directory)
 
     def _create_local_directory(self) -> bool:
         """
@@ -52,8 +48,7 @@ class LocalHandler:
         """Return a file path to write notes to."""
         directory = self._set_local_storage()
         now = int(time())
-        file_path = f"{directory}/{self.file_prefix}-{now}.json"
-        return file_path
+        return os.path.join(directory, f"{self.file_prefix}-{now}.json")
 
     def _clean_note_file_names(self, notes: list) -> list:
         """
@@ -68,11 +63,8 @@ class LocalHandler:
             A list of datetimes
             extracted from file names.
         """
-        cleaned_notes = []
-        for note in notes:
-            cleaned_note = re.search(".*([0-9]{10}).json", note).group(1)
-            cleaned_notes.append(int(cleaned_note))
-        return cleaned_notes
+        rx = ".*([0-9]{10}).json"
+        return [int(re.search(rx, note).group(1)) for note in notes]
 
     def _find_nearest_date(self, dates: list, date: int) -> list:
         """
@@ -122,10 +114,8 @@ class LocalHandler:
         """
         try:
             stored_notes = os.listdir(self.directory)
-            current_time = int(time())
             dates = self._clean_note_file_names(stored_notes)
-            date = self._find_nearest_date(dates=dates, date=current_time)
-            return date
+            return self._find_nearest_date(dates=dates, date=int(time()))
         except FileNotFoundError:
             return False
         except ValueError:
