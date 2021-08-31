@@ -1,6 +1,12 @@
 """Wrapper around all top-level functions for notes handling."""
 from sk_notes.local_handler import LocalHandler
-from sk_notes.note_handler import CreateNote, DeleteNote, DisplayNote, UpdateNote
+from sk_notes.note_handler import (
+    NewNote,
+    CreateNote,
+    DeleteNote,
+    DisplayNote,
+    UpdateNote,
+)
 
 
 class Notes:
@@ -17,7 +23,7 @@ class Notes:
         """
         self.categories = categories
         self.local = LocalHandler()
-        self.data = self.local.read_notes()
+        self.data = [NewNote(note=note).dict_to_note() for note in self.local.read_notes()]
         self.create_note = CreateNote(categories=categories, data=self.data)
         self.delete_note = DeleteNote(data=self.data)
         self.display_note = DisplayNote(data=self.data)

@@ -1,5 +1,6 @@
 """Classes to handle interactions with local storage."""
 from sk_notes.constants import EXAMPLE_NOTE
+from dataclasses import asdict
 from time import time
 import json
 import numpy
@@ -109,7 +110,7 @@ class LocalHandler:
         """
         file_path = self._set_outfile_path()
         with open(file_path, mode="w") as file:
-            json.dump(data, file)
+            json.dump([asdict(row) for row in data], file)
         return f"Notes written to {file_path}"
 
     def _find_most_recent_file_timestamp(self) -> int:

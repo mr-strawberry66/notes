@@ -1,10 +1,54 @@
 """Classes to handle note creation, deletion, and restoration."""
 from colorama import Fore
+from dataclasses import dataclass
 from datetime import datetime
 from time import time
-from pandas import DataFrame
 import editor
 import inquirer
+
+
+@dataclass(order=True)
+class Note:
+    """Class defining a note."""
+
+    id: int
+    created_at: int
+    category: str
+    title: str
+    body: str
+    tags: list
+    due_date: str
+
+
+class NewNote:
+    """Class used to cast a dictionary into a Note."""
+
+    def __init__(self, note):
+        """
+        Initialise the class.
+
+        args:
+            note: (dict)
+                One dictionary formatted
+                note to be cast into a new
+                Note object.
+
+        returns:
+            A new note object.
+        """
+        self.note = note
+
+    def dict_to_note(self) -> Note:
+        """Convert a note from a dict into a Note object."""
+        return Note(
+            id=self.note["id"],
+            created_at=self.note["created_at"],
+            category=self.note["category"],
+            title=self.note["title"],
+            body=self.note["body"],
+            tags=self.note["tags"],
+            due_date=self.note["due_date"],
+        )
 
 
 class CreateNote:
@@ -30,13 +74,7 @@ class CreateNote:
 
     def _find_max_id(self):
         """Return the highest id in list of notes."""
-        _ids = []
-        if self.data:
-            for row in self.data:
-                _ids.append(row["id"])
-            return max(_ids)
-        else:
-            return 0
+        return max([note.id if self.data else 0 for note in self.data])
 
     def _set_id(self):
         """
@@ -116,17 +154,17 @@ class CreateNote:
                     )
                     pass
 
-    def create_note(self) -> dict:
+    def create_note(self) -> Note:
         """Create a new note."""
-        note = {
-            "id": self._set_id(),
-            "created_at": int(time()),
-            "category": self._set_category(),
-            "title": self._set_title(),
-            "body": self._set_body(),
-            "tags": self._set_tags(),
-            "due_date": self._set_due_date(),
-        }
+        note = Note(
+            id=self._set_id(),
+            created_at=int(time()),
+            category=self._set_category(),
+            title=self._set_title(),
+            body=self._set_body(),
+            tags=self._set_tags(),
+            due_date=self._set_due_date(),
+        )
         return note
 
 
@@ -147,9 +185,7 @@ class UpdateNote:
 
     def find_index(self, _id: int) -> int:
         """Return a note by a specified ID."""
-        for row in self.data:
-            if row["id"] == _id:
-                return self.data.index(row) + 1
+        return [row.id for row in self.data if row.id == _id][0] + 1
 
     def _find_note(self, _id: int) -> dict:
         index = self.find_index(_id=_id) - 1
@@ -186,7 +222,7 @@ class UpdateNote:
     def _update_tags(self, _id) -> list:
         """Update tags for a note."""
         tag_string = ""
-        tags = self._find_note(_id=_id)["tags"]
+        tags = self._find_note(_id=_id).tags
         for tag in tags:
             tag_string += f"{tag},"
         updated_tags = editor.edit(contents=tag_string).decode("utf-8")
@@ -196,8 +232,8 @@ class UpdateNote:
         """Update all fields for a note."""
         note = self._find_note(_id=_id)
         updated_note = {
-            "id": note["id"],
-            "created_at": note["created_at"],
+            "id": note.id,
+            "created_at": note.created_at,
             "category": self.create_note._set_category(),
             "title": self._update_field(_id=_id, field="title"),
             "body": self._update_field(_id=_id, field="body"),
@@ -210,13 +246,13 @@ class UpdateNote:
         """Update the category for a note."""
         note = self._find_note(_id=_id)
         updated_note = {
-            "id": note["id"],
-            "created_at": note["created_at"],
+            "id": note.id,
+            "created_at": note.created_at,
             "category": self.create_note._set_category(),
-            "title": note["title"],
-            "body": note["body"],
-            "tags": note["tags"],
-            "due_date": note["due_date"],
+            "title": note.title,
+            "body": note.body,
+            "tags": note.tags,
+            "due_date": note.due_date,
         }
         return updated_note
 
@@ -224,13 +260,13 @@ class UpdateNote:
         """Update the title for a note."""
         note = self._find_note(_id=_id)
         updated_note = {
-            "id": note["id"],
-            "created_at": note["created_at"],
-            "category": note["category"],
+            "id": note.id,
+            "created_at": note.created_at,
+            "category": note.category,
             "title": self._update_field(_id=_id, field="title"),
-            "body": note["body"],
-            "tags": note["tags"],
-            "due_date": note["due_date"],
+            "body": note.body,
+            "tags": note.tags,
+            "due_date": note.due_date,
         }
         return updated_note
 
@@ -238,13 +274,13 @@ class UpdateNote:
         """Update the body for a note."""
         note = self._find_note(_id=_id)
         updated_note = {
-            "id": note["id"],
-            "created_at": note["created_at"],
-            "category": note["category"],
-            "title": note["title"],
+            "id": note.id,
+            "created_at": note.created_at,
+            "category": note.category,
+            "title": note.title,
             "body": self._update_field(_id=_id, field="body"),
-            "tags": note["tags"],
-            "due_date": note["due_date"],
+            "tags": note.tags,
+            "due_date": note.due_date,
         }
         return updated_note
 
@@ -252,13 +288,13 @@ class UpdateNote:
         """Update the tags for a note."""
         note = self._find_note(_id=_id)
         updated_note = {
-            "id": note["id"],
-            "created_at": note["created_at"],
-            "category": note["category"],
-            "title": note["title"],
-            "body": note["body"],
+            "id": note.id,
+            "created_at": note.created_at,
+            "category": note.category,
+            "title": note.title,
+            "body": note.body,
             "tags": self._update_tags(_id=_id),
-            "due_date": note["due_date"],
+            "due_date": note.due_date,
         }
         return updated_note
 
@@ -266,12 +302,12 @@ class UpdateNote:
         """Update the due date for a note."""
         note = self._find_note(_id=_id)
         updated_note = {
-            "id": note["id"],
-            "created_at": note["created_at"],
-            "category": note["category"],
-            "title": note["title"],
-            "body": note["body"],
-            "tags": note["tags"],
+            "id": note.id,
+            "created_at": note.created_at,
+            "category": note.category,
+            "title": note.title,
+            "body": note.body,
+            "tags": note.tags,
             "due_date": self.create_note._set_due_date(),
         }
         return updated_note
@@ -293,9 +329,7 @@ class DeleteNote:
 
     def _find_note(self, _id: int) -> dict:
         """Return a note by a specified ID."""
-        for row in self.data:
-            if row["id"] == _id:
-                return self.data.index(row) + 1
+        return [row.id for row in self.data if row.id == _id][0]
 
     def find_index(self, _id) -> int:
         """Return the index of a row to delete."""
@@ -342,9 +376,9 @@ class DisplayNote:
         """Display a summary of all notes."""
         try:
             for note in self.data:
-                _id = note["id"]
-                title = note["title"]
-                _due_date = note["due_date"]
+                _id = note.id
+                title = note.title
+                _due_date = note.due_date
                 colour = self._test_due_date(due_date=_due_date)
                 if _due_date:
                     due_date = _due_date
@@ -360,18 +394,16 @@ class DisplayNote:
 
     def _find_note(self, _id: int) -> dict:
         """Return a note by a specified ID."""
-        for row in self.data:
-            if row["id"] == _id:
-                return row
+        return [row for row in self.data if row.id == _id][0]
 
     def show_note(self, _id: int) -> None:
         """Display the full content of a specified note."""
         try:
             note = self._find_note(_id=_id)
-            title = note["title"]
-            body = note["body"]
-            _due_date = note["due_date"]
-            tags = note["tags"]
+            title = note.title
+            body = note.body
+            _due_date = note.due_date
+            tags = note.tags
             colour = self._test_due_date(due_date=_due_date)
             if _due_date:
                 due_date = _due_date
@@ -388,9 +420,7 @@ class DisplayNote:
             return "Note not found"
 
     def _aggregate(self, aggregation: str) -> list:
-        data = DataFrame(self.data)
-        data = data[data["category"] == aggregation]
-        return data.to_dict("records")
+        return [note for note in self.data if note.category == aggregation]
 
     def list_aggregation(self, aggregation: str) -> None:
         """
@@ -402,9 +432,9 @@ class DisplayNote:
                 to display.
         """
         for note in self._aggregate(aggregation=aggregation):
-            _id = note["id"]
-            title = note["title"]
-            _due_date = note["due_date"]
+            _id = note.id
+            title = note.title
+            _due_date = note.due_date
             colour = self._test_due_date(due_date=_due_date)
             if _due_date:
                 due_date = _due_date
@@ -417,22 +447,16 @@ class DisplayNote:
             )
 
     def _find_tag(self, tag: str) -> list:
-        matched_rows = []
-        if self.data:
-            for row in self.data:
-                for _tag in row["tags"]:
-                    if _tag == tag:
-                        matched_rows.append(row)
-            return matched_rows
+        return [row for row in self.data if tag in row.tags]
 
     def list_by_tag(self, tag: str) -> None:
         """List notes grouped by a tag."""
         notes = self._find_tag(tag=tag)
         if notes:
             for note in notes:
-                _id = note["id"]
-                title = note["title"]
-                _due_date = note["due_date"]
+                _id = note.id
+                title = note.title
+                _due_date = note.due_date
                 colour = self._test_due_date(due_date=_due_date)
                 if _due_date:
                     due_date = _due_date
