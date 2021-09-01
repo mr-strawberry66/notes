@@ -23,7 +23,9 @@ class Notes:
         """
         self.categories = categories
         self.local = LocalHandler()
-        self.data = [NewNote(note=note).dict_to_note() for note in self.local.read_notes()]
+        self.data = [
+            NewNote(note=note).dict_to_note() for note in self.local.read_notes()
+        ]
         self.create_note = CreateNote(categories=categories, data=self.data)
         self.delete_note = DeleteNote(data=self.data)
         self.display_note = DisplayNote(data=self.data)
@@ -81,14 +83,13 @@ class Notes:
     def delete(self, _id: int) -> str:
         """Delete a note by specified Id."""
         index = self.delete_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.pop(index - 1)
-                return f"Note {_id} has been deleted"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.pop(index)
+            return f"Note {_id} has been deleted"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)
 
     def update(self, _id: int) -> str:
         """Update a note specified by Id."""

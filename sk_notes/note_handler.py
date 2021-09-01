@@ -71,7 +71,8 @@ class CreateNote:
 
     def _find_max_id(self):
         """Return the highest id in list of notes."""
-        return max([note.id if self.data else 0 for note in self.data])
+        ids = [note.id for note in self.data]
+        return max(ids) if ids else 0
 
     def _set_id(self):
         """
@@ -279,14 +280,16 @@ class DeleteNote:
 
     def _find_note(self, _id: int) -> dict:
         """Return a note by a specified ID."""
-        return [row.id for row in self.data if row.id == _id][0]
+        return [self.data.index(row) for row in self.data if row.id == _id]
 
     def find_index(self, _id) -> int:
         """Return the index of a row to delete."""
         while True:
             usr_input = input(f"Are you sure you want to delete note? {_id} y/n: ")
             if usr_input == "y":
-                return self._find_note(_id=_id)
+                index = self._find_note(_id=_id)
+                print(index)
+                return index[0] if isinstance(index, list) else index
             elif usr_input == "n":
                 return "Cancelling..."
 
