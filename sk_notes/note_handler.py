@@ -178,10 +178,11 @@ class UpdateNote:
 
     def find_index(self, _id: int) -> int:
         """Return a note by a specified ID."""
-        return [row.id for row in self.data if row.id == _id][0]
+        index = [self.data.index(row) for row in self.data if row.id == _id]
+        return index[0] if isinstance(index, list) else index
 
     def _find_note(self, _id: int) -> dict:
-        index = self.find_index(_id=_id) - 1
+        index = self.find_index(_id=_id)
         return self.data[index]
 
     def _update_field(self, _id: int, field: str) -> str:
@@ -208,11 +209,11 @@ class UpdateNote:
 
     def _clean_tags(self, tag_string: str) -> list:
         """Take a string representation of a tag and parse as a list."""
-        cleaned_tags = []
-        tags = tag_string.split(",")
-        for tag in tags:
-            cleaned_tags.append(tag.strip().lower().replace("\n", ""))
-        return cleaned_tags
+        return [
+            tag.strip().lower().replace("\n", "")
+            for tag in tag_string.split(",")
+            if tag.strip().replace("\n", "")
+        ]
 
     def _update_tags(self, _id) -> list:
         """Update tags for a note."""
@@ -288,7 +289,6 @@ class DeleteNote:
             usr_input = input(f"Are you sure you want to delete note? {_id} y/n: ")
             if usr_input == "y":
                 index = self._find_note(_id=_id)
-                print(index)
                 return index[0] if isinstance(index, list) else index
             elif usr_input == "n":
                 return "Cancelling..."
