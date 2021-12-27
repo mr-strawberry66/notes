@@ -1,6 +1,13 @@
 """Wrapper around all top-level functions for notes handling."""
 from sk_notes.local_handler import LocalHandler
-from sk_notes.note_handler import CreateNote, DeleteNote, DisplayNote, UpdateNote
+from sk_notes.note_handler import (
+    NewNote,
+    CreateNote,
+    DeleteNote,
+    DisplayNote,
+    UpdateNote,
+)
+from sk_notes.settings import SetUp
 
 
 class Notes:
@@ -8,12 +15,15 @@ class Notes:
 
     def __init__(self) -> None:
         """Initialise the class."""
+        self.categories = SetUp().aggregations()
         self.local = LocalHandler()
-        self.data = self.local.read_notes()
-        self.create_note = CreateNote(data=self.data)
+        self.data = [
+            NewNote(note=note).dict_to_note() for note in self.local.read_notes()
+        ]
+        self.create_note = CreateNote(categories=self.categories, data=self.data)
         self.delete_note = DeleteNote(data=self.data)
         self.display_note = DisplayNote(data=self.data)
-        self.update_note = UpdateNote(data=self.data)
+        self.update_note = UpdateNote(categories=self.categories, data=self.data)
 
     def notes(self) -> str:
         """Display all notes."""
@@ -24,6 +34,10 @@ class Notes:
         return self.display_note.list_aggregation(
             aggregation=aggregation.strip(),
         )
+
+    def group(self, aggregation: str) -> str:
+        """Display a summary of notes by a specified aggregation."""
+        return self.display_note.list_aggregation(aggregation=aggregation)
 
     def tag(self, tag: str) -> str:
         """
@@ -61,89 +75,83 @@ class Notes:
     def delete(self, _id: int) -> str:
         """Delete a note by specified Id."""
         index = self.delete_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.pop(index - 1)
-                return f"Note {_id} has been deleted"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.pop(index)
+            return f"Note {_id} has been deleted"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)
 
     def update(self, _id: int) -> str:
         """Update a note specified by Id."""
+        print(_id)
         index = self.update_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.append(self.update_note.update_all(_id=_id))
-                self.data.pop(index - 1)
-                return f"Note {_id} has been updated"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.append(self.update_note.update_all(_id=_id))
+            self.data.pop(index)
+            return f"Note {_id} has been updated"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)
 
     def update_category(self, _id: int) -> str:
         """Update a note specified by Id."""
         index = self.update_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.append(self.update_note.update_category(_id=_id))
-                self.data.pop(index - 1)
-                return f"Note {_id} has been updated"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.append(self.update_note.update_category(_id=_id))
+            self.data.pop(index)
+            return f"Note {_id} has been updated"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)
 
     def update_title(self, _id: int) -> str:
         """Update a note specified by Id."""
         index = self.update_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.append(self.update_note.update_title(_id=_id))
-                self.data.pop(index - 1)
-                return f"Note {_id} has been updated"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.append(self.update_note.update_title(_id=_id))
+            self.data.pop(index)
+            return f"Note {_id} has been updated"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)
 
     def update_body(self, _id: int) -> str:
         """Update a note specified by Id."""
         index = self.update_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.append(self.update_note.update_body(_id=_id))
-                self.data.pop(index - 1)
-                return f"Note {_id} has been updated"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.append(self.update_note.update_body(_id=_id))
+            self.data.pop(index)
+            return f"Note {_id} has been updated"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)
 
     def update_tags(self, _id: int) -> str:
         """Update a note specified by Id."""
         index = self.update_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.append(self.update_note.update_tags(_id=_id))
-                self.data.pop(index - 1)
-                return f"Note {_id} has been updated"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.append(self.update_note.update_tags(_id=_id))
+            self.data.pop(index)
+            return f"Note {_id} has been updated"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)
 
     def update_date(self, _id: int) -> str:
         """Update a note specified by Id."""
         index = self.update_note.find_index(_id=_id)
-        if index:
-            if isinstance(index, int):
-                self.data.append(self.update_note.update_date(_id=_id))
-                self.data.pop(index - 1)
-                return f"Note {_id} has been updated"
-            else:
-                print(index)
-        else:
+        if isinstance(index, int):
+            self.data.append(self.update_note.update_date(_id=_id))
+            self.data.pop(index)
+            return f"Note {_id} has been updated"
+        elif not index:
             return "Note not found"
+        else:
+            print(index)

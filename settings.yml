@@ -1,0 +1,15 @@
+# Modify this settings file to fit your needs.
+
+# Path to your Google Cloud Project service account credentials file.
+gcp_credentials_path: null
+
+# Your Google Cloud Project Id.
+gcp_project_id: null
+
+# The Google Cloud Storage bucket to store your notes in.
+gcs_bucket: null
+
+# A list of categories to group your notes by. Defaults to Personal and Work.
+aggregations:
+  - Personal
+  - Work

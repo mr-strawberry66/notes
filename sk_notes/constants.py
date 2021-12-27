@@ -1,5 +1,6 @@
 """Module to hold project-wide constants."""
 from datetime import datetime
+from time import time
 
 EXAMPLE_NOTE = [
     {
@@ -24,6 +25,8 @@ EXAMPLE_NOTE = [
             "by how long you have left to do the task, "
             "shortest amount of time, to longest."
         ),
+        "created_at": int(time()),
         "due_date": datetime.now().strftime("%Y-%m-%d"),
+        "tags": ["example", "test"],
     }
 ]
