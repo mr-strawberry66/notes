@@ -1,7 +1,7 @@
 """Classes to handle note creation, deletion, and restoration."""
-from datetime import datetime
-from dataclasses import dataclass
 import re
+from dataclasses import dataclass
+from datetime import datetime
 from time import time
 
 from colorama import Fore
@@ -9,8 +9,6 @@ from colorama import Fore
 from editor import edit
 
 import inquirer
-
-# from pandas import DataFrame
 
 
 @dataclass(order=True)

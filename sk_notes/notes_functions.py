@@ -1,10 +1,10 @@
 """Wrapper around all top-level functions for notes handling."""
 from sk_notes.local_handler import LocalHandler
 from sk_notes.note_handler import (
-    NewNote,
     CreateNote,
     DeleteNote,
     DisplayNote,
+    NewNote,
     UpdateNote,
 )
 from sk_notes.settings import SetUp

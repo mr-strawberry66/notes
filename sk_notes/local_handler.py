@@ -1,8 +1,8 @@
 """Classes to handle interactions with local storage."""
-from dataclasses import asdict
 import json
 import os
 import re
+from dataclasses import asdict
 from time import time
 
 import numpy
