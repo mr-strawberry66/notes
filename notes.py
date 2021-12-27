@@ -1,8 +1,8 @@
 """Wrapper around the REPL."""
 import os
-from commands.notes import delete, find, ls, new, update
-
 import click
+
+from .commands.notes import delete, find, ls, new, update
 
 
 @click.group()
