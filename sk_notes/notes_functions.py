@@ -19,13 +19,11 @@ class Notes:
         """Display all notes."""
         return self.display_note.list_all()
 
-    def personal(self) -> str:
-        """Display a summary of notes categorised as personal."""
-        return self.display_note.list_aggregation(aggregation="Personal")
-
-    def work(self) -> str:
-        """Display a summary of notes categorised as work."""
-        return self.display_note.list_aggregation(aggregation="Work")
+    def aggregate(self, aggregation: str):
+        """Display a summary of notes grouped by a specified aggregation."""
+        return self.display_note.list_aggregation(
+            aggregation=aggregation.strip(),
+        )
 
     def tag(self, tag: str) -> str:
         """
@@ -60,7 +58,7 @@ class Notes:
         """Store notes locally and optionally in Cloud Storage."""
         return self.local.write_notes(data=self.data)
 
-    def delete_note(self, _id: int) -> str:
+    def delete(self, _id: int) -> str:
         """Delete a note by specified Id."""
         index = self.delete_note.find_index(_id=_id)
         if index:

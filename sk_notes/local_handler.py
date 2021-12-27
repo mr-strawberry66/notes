@@ -1,10 +1,12 @@
 """Classes to handle interactions with local storage."""
-from sk_notes.constants import EXAMPLE_NOTE
-from time import time
 import json
-import numpy
 import os
 import re
+from time import time
+
+import numpy
+
+from sk_notes.constants import EXAMPLE_NOTE
 
 
 class LocalHandler:

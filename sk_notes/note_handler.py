@@ -1,10 +1,14 @@
 """Classes to handle note creation, deletion, and restoration."""
-from colorama import Fore
 from datetime import datetime
 from time import time
-from pandas import DataFrame
-import editor
+
+from colorama import Fore
+
+from editor import edit
+
 import inquirer
+
+from pandas import DataFrame
 
 
 class CreateNote:
@@ -75,9 +79,7 @@ class CreateNote:
     def _set_body(self):
         """Set the body of a note based on user input."""
         while True:
-            body = editor.edit(contents="# Write your note on the next line: ").decode(
-                "utf-8"
-            )
+            body = edit(contents="# Write your note on the next line: ").decode("utf-8")
             if not body:
                 print(
                     f"\n{Fore.YELLOW}Please input content for your note.{Fore.RESET}\n"
@@ -171,7 +173,7 @@ class UpdateNote:
             user for the specified field.
         """
         content = self._find_note(_id=_id)[field]
-        updated_content = editor.edit(contents=content).decode("utf-8")
+        updated_content = edit(contents=content).decode("utf-8")
         return updated_content
 
     def _clean_tags(self, tag_string: str) -> list:
@@ -188,7 +190,7 @@ class UpdateNote:
         tags = self._find_note(_id=_id)["tags"]
         for tag in tags:
             tag_string += f"{tag},"
-        updated_tags = editor.edit(contents=tag_string).decode("utf-8")
+        updated_tags = edit(contents=tag_string).decode("utf-8")
         return self._clean_tags(tag_string=updated_tags)
 
     def update_all(self, _id) -> dict:

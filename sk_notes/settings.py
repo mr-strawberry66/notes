@@ -37,9 +37,7 @@ class BigQueryCredentials:
             try:
                 return os.environ["GCP_PROJECT_ID"]
             except KeyError:
-                raise ValueError(
-                    "Please provide a GCP Project Id."
-                )
+                raise ValueError("Please provide a GCP Project Id.")
         else:
             return self.gcp_project_id
 
@@ -66,9 +64,7 @@ class BigQueryCredentials:
             try:
                 return os.environ["DATASET"]
             except KeyError:
-                raise ValueError(
-                    "Please provide a dataset to write your notes to."
-                )
+                raise ValueError("Please provide a dataset to write your notes to.")
         else:
             return self.dataset
 
