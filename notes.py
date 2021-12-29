@@ -1,20 +1,22 @@
-"""Wrapper around the REPL."""
+"""Wrapper around Notes CLI."""
 import os
-import click
+from commands.notes import delete, find, ls, new, update
 
-from .commands.notes import delete, find, ls, new, update
+import click
+import pyfiglet
 
 
 @click.group()
 def cli():
-    """Group for Email CLI."""
+    """Group for Notes CLI."""
 
 
 @cli.command()
 def version():
     """Display version information."""
-    print("Email CLI")
-    print(f"  Version: {_version()}")
+    text = pyfiglet.figlet_format("Notes", font="slant")
+    click.echo(text)
+    click.echo(f"Version: {_version()}")
 
 
 def _version():
